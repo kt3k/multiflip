@@ -1,5 +1,5 @@
-# info-pane.js
+# info-pane
 
-> pata pata info pane for a game ui. (jQuery plugin)
+> pata pata info pane for game ui. (jQuery plugin)
 
-***Note:*** This depends on jQuery and es6-promise.
+***Note:*** This library depends on jQuery and es6-promise.
