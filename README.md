@@ -1,4 +1,4 @@
-# info-pane
+# info-pane v0.1.0
 
 > pata pata info pane for game ui. (jQuery plugin)
 
