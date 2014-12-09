@@ -1,0 +1,29 @@
+<script src="jquery.min.js"></script>
+<script src="index.js"></script>
+<script>
+$(function () {
+    $('.main').infoPane(400, 200, 8, 4, {unitDur: 500}).show().then(function (ip) {
+        ip.$dom.click(function () {
+            ip.hide();
+        });
+    });
+});
+
+</script>
+
+<style>
+.main {
+    color: white;
+    transition-duration: 500ms;
+    text-align: center;
+    margin: auto;
+    position: relative;
+}
+
+.main .info-content {
+    position: relative;
+    opacity: 0;
+}
+</style>
+
+<div class="main"><div class="info-content">aaa</div></div>

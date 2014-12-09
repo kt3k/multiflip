@@ -1,0 +1,17 @@
+{
+  "name": "info-pane",
+  "main": "index.js",
+  "version": "0.0.0",
+  "authors": [
+    "Yoshiya Hinosawa <stibium121@gmail.com>"
+  ],
+  "description": "pata pata info pane for game ui.",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
