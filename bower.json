@@ -2,6 +2,7 @@
   "name": "info-pane",
   "main": "index.js",
   "version": "0.0.0",
+  "repository": "https://github.com/kt3k/info-pane.git",
   "authors": [
     "Yoshiya Hinosawa <stibium121@gmail.com>"
   ],
