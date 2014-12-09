@@ -15,15 +15,26 @@
         });
     };
 
-    var InfoPane = function ($dom, w, h, m, n, unitDur, diffDur, bgcolor, chipClass) {
+    var InfoPane = function ($dom, m, n, width, height, unitDur, diffDur, bgcolor, chipClass) {
         this.$dom = $dom;
         this.$content = $('*', $dom);
-        this.w = w;
-        this.h = h;
+        this.w = width || $dom.width();
+        this.h = height || $dom.height();
+
+        if (!this.w) {
+            console.log('error: dom width unavailable');
+            return null;
+        }
+
+        if (!this.h) {
+            console.log('error: dom width unavailable');
+            return null;
+        }
+
         this.m = m;
         this.n = n;
-        this.uw = w / m;
-        this.uh = h / n;
+        this.uw = this.w / m;
+        this.uh = this.h / n;
 
         this.unitDur = unitDur;
         this.diffDur = unitDur / (m + n);
@@ -31,8 +42,6 @@
         this.bgcolor = bgcolor;
 
         this.chipClass = chipClass || defaultChipClass;
-
-        this.init();
     };
 
     var ipPt = InfoPane.prototype;
@@ -73,6 +82,8 @@
     };
 
     ipPt.show = function () {
+        this.init();
+
         var that = this;
         var p = wait();
 
@@ -134,10 +145,12 @@
      * @param {Number} n
      * @param {Number} m
      */
-    $.fn.infoPane = function (w, h, n, m, opts) {
+    $.fn.infoPane = function (n, m, opts) {
         opts = opts || {};
 
-        var ip = new InfoPane(this, w, h, n, m, opts.unitDur || defaultUnitDur, opts.diffDur || defaultDiffDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
+        var ip = new InfoPane(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.diffDur || defaultDiffDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
+
+        window.ip = ip;
 
         return ip;
 

@@ -2,7 +2,7 @@
 <script src="index.js"></script>
 <script>
 $(function () {
-    $('.main').infoPane(400, 200, 8, 4, {unitDur: 500}).show().then(function (ip) {
+    $('.main').infoPane(8, 4, {unitDur: 500}).show().then(function (ip) {
         ip.$dom.click(function () {
             ip.hide();
         });
@@ -18,6 +18,8 @@ $(function () {
     text-align: center;
     margin: auto;
     position: relative;
+    width: 400px;
+    height: 200px;
 }
 
 .main .info-content {
