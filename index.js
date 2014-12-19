@@ -3,7 +3,7 @@
     'use strict';
 
     var defaultUnitDur = 400;
-    var defaultDiffDur = 40;
+
     var defaultBgcolor = '#393F44';
     var defaultChipClass = 'chipClass';
 
@@ -15,7 +15,7 @@
         });
     };
 
-    var InfoPane = function ($dom, m, n, width, height, unitDur, diffDur, bgcolor, chipClass) {
+    var InfoPane = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
         this.$dom = $dom;
         this.$content = $('*', $dom);
         this.w = width || $dom.width();
@@ -43,6 +43,7 @@
 
         this.chipClass = chipClass || defaultChipClass;
     };
+
 
     var ipPt = InfoPane.prototype;
 
@@ -140,17 +141,31 @@
     };
 
     /**
-     * Creates info pane based inside a element.
+     * Creates info pane.
      *
-     * @param {Number} n
-     * @param {Number} m
+     * @method infoPane
+     * @param {Number} n The horizontal partition number
+     * @param {Number} m The vertical partition number
+     * @param {Object} opts The options
+     * @param {Number} opts.width The pane's width (default: the dom's width)
+     * @param {Number} opts.height The pane's height (default: the dom's height)
+     * @param {Number} opts.unitDur The unit duration of flip of small chip inside the pane (default: 400)
+     * @param {String} opts.bgcolor The background color of the pane (default: '#393F44')
+     * @param {zIndex} opts.zIndex The z-index of the pane (default: undefined);
+     * @return {InfoPane} InfoPane object
+     *
+     * @example
+     *    $('.main').infoPane(8, 4, {unitDur: 400}).show().then(function (ip) {
+     *        ip.$dom.click(function () {
+     *            ip.hide();
+     *        });
+     *    });
+     *
      */
     $.fn.infoPane = function (n, m, opts) {
         opts = opts || {};
 
-        var ip = new InfoPane(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.diffDur || defaultDiffDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
-
-        window.ip = ip;
+        var ip = new InfoPane(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
 
         return ip;
 
