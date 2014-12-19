@@ -15,6 +15,11 @@
         });
     };
 
+    /**
+     * InfoPane class handles the behaviours of info panes.
+     *
+     * @class InfoPane
+     */
     var InfoPane = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
         this.$dom = $dom;
         this.$content = $('*', $dom);
@@ -47,6 +52,11 @@
 
     var ipPt = InfoPane.prototype;
 
+    /**
+     * Initializes the info pane.
+     *
+     * @method init
+     */
     ipPt.init = function () {
         this.$dom.width(this.w).height(this.h);
 
@@ -68,6 +78,16 @@
         return this;
     };
 
+    /**
+     * Creates the pane's chip
+     *
+     * @method createChip
+     * @param {Number} left The left offset
+     * @param {Number} top The top offset
+     * @param {Number} w The width
+     * @param {Number} h The height
+     * @private
+     */
     ipPt.createChip = function (left, top, w, h) {
         return $('<div />').css({
             position: 'absolute',
@@ -82,6 +102,12 @@
         });
     };
 
+    /**
+     * Shows info pane.
+     *
+     * @method show
+     * @return {Promise}
+     */
     ipPt.show = function () {
         this.init();
 
@@ -113,6 +139,12 @@
         });
     };
 
+    /**
+     * Hides info pane.
+     *
+     * @method hide
+     * @return {Promise}
+     */
     ipPt.hide = function () {
         var that = this;
 
@@ -141,7 +173,17 @@
     };
 
     /**
+     * @class jQuery
+     */
+
+    /**
      * Creates info pane.
+     *
+     *     $('.main').infoPane(8, 4, {unitDur: 400}).show().then(function (ip) {
+     *         ip.$dom.click(function () {
+     *             ip.hide();
+     *         });
+     *     });
      *
      * @method infoPane
      * @param {Number} n The horizontal partition number
@@ -151,15 +193,8 @@
      * @param {Number} opts.height The pane's height (default: the dom's height)
      * @param {Number} opts.unitDur The unit duration of flip of small chip inside the pane (default: 400)
      * @param {String} opts.bgcolor The background color of the pane (default: '#393F44')
-     * @param {zIndex} opts.zIndex The z-index of the pane (default: undefined);
+     * @param {Number} opts.zIndex The z-index of the pane (default: undefined);
      * @return {InfoPane} InfoPane object
-     *
-     * @example
-     *    $('.main').infoPane(8, 4, {unitDur: 400}).show().then(function (ip) {
-     *        ip.$dom.click(function () {
-     *            ip.hide();
-     *        });
-     *    });
      *
      */
     $.fn.infoPane = function (n, m, opts) {
