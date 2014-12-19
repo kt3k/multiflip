@@ -1,8 +1,10 @@
 ---
 version: 0.1.1
 files:
-  README.md: v%.%.%
+  README.md:
+    - info-pane v%.%.%
+    - doc/v%.%.%
   bower.json: '"version": "%.%.%"'
   ".jsduck.release.json":
-  - "(v%.%.%)"
-  - doc/v%.%.%
+    - "(v%.%.%)"
+    - doc/v%.%.%
