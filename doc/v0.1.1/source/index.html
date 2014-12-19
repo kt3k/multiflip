@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+(function ($) {
+    &#39;use strict&#39;;
+
+    var defaultUnitDur = 400;
+
+    var defaultBgcolor = &#39;#393F44&#39;;
+    var defaultChipClass = &#39;chipClass&#39;;
+
+    var flipTransform = &#39;rotate3d(1, -1, 0, -180deg)&#39;;
+
+    var wait = function (n) {
+        return new Promise(function (resolve) {
+            setTimeout(resolve, n);
+        });
+    };
+
+<span id='InfoPane'>    /**
+</span>     * InfoPane class handles the behaviours of info panes.
+     *
+     * @class InfoPane
+     */
+    var InfoPane = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
+        this.$dom = $dom;
+        this.$content = $(&#39;*&#39;, $dom);
+        this.w = width || $dom.width();
+        this.h = height || $dom.height();
+
+        if (!this.w) {
+            console.log(&#39;error: dom width unavailable&#39;);
+            return null;
+        }
+
+        if (!this.h) {
+            console.log(&#39;error: dom width unavailable&#39;);
+            return null;
+        }
+
+        this.m = m;
+        this.n = n;
+        this.uw = this.w / m;
+        this.uh = this.h / n;
+
+        this.unitDur = unitDur;
+        this.diffDur = unitDur / (m + n);
+
+        this.bgcolor = bgcolor;
+
+        this.chipClass = chipClass || defaultChipClass;
+    };
+
+
+    var ipPt = InfoPane.prototype;
+
+<span id='InfoPane-method-init'>    /**
+</span>     * Initializes the info pane.
+     *
+     * @method init
+     */
+    ipPt.init = function () {
+        this.$dom.width(this.w).height(this.h);
+
+        this.$content.css({opacity: 0, transitionDuration: this.unitDur + &#39;ms&#39;});
+
+        this.chipGroups = [];
+
+        for (var i = 0; i &lt; this.m; i++) {
+            for (var j = 0; j &lt; this.n; j ++) {
+                var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
+                    .prependTo(this.$dom).addClass(this.chipClass);
+
+                var group = i + j;
+
+                (this.chipGroups[group] = this.chipGroups[group] || []).push(chip);
+            }
+        }
+
+        return this;
+    };
+
+<span id='InfoPane-method-createChip'>    /**
+</span>     * Creates the pane&#39;s chip
+     *
+     * @method createChip
+     * @param {Number} left The left offset
+     * @param {Number} top The top offset
+     * @param {Number} w The width
+     * @param {Number} h The height
+     * @private
+     */
+    ipPt.createChip = function (left, top, w, h) {
+        return $(&#39;&lt;div /&gt;&#39;).css({
+            position: &#39;absolute&#39;,
+            left: left + &#39;px&#39;,
+            top: top + &#39;px&#39;,
+            width: w + &#39;px&#39;,
+            height: h + &#39;px&#39;,
+            backgroundColor: this.bgcolor,
+            transitionDuration: this.unitDur + &#39;ms&#39;,
+            transform: flipTransform,
+            backfaceVisibility: &#39;hidden&#39;
+        });
+    };
+
+<span id='InfoPane-method-show'>    /**
+</span>     * Shows info pane.
+     *
+     * @method show
+     * @return {Promise}
+     */
+    ipPt.show = function () {
+        this.init();
+
+        var that = this;
+        var p = wait();
+
+        this.chipGroups.forEach(function (group) {
+            p = p.then(function () {
+
+                group.forEach(function (chip) {
+                    chip.css(&#39;transform&#39;, &#39;&#39;);
+                });
+
+                return wait(that.diffDur);
+            });
+        });
+
+        return p.then(function () {
+
+            return wait(that.unitDur / 2);
+
+        }).then(function () {
+            that.$content.css(&#39;opacity&#39;, 1);
+
+            return wait(that.unitDur);
+        }).then(function () {
+
+            return that;
+        });
+    };
+
+<span id='InfoPane-method-hide'>    /**
+</span>     * Hides info pane.
+     *
+     * @method hide
+     * @return {Promise}
+     */
+    ipPt.hide = function () {
+        var that = this;
+
+        this.$content.css(&#39;opacity&#39;, 0);
+        var p = wait(that.unitDur);
+
+        this.chipGroups.forEach(function (group) {
+            p = p.then(function () {
+
+                group.forEach(function (chip) {
+                    chip.css(&#39;transform&#39;, flipTransform);
+                });
+
+                return wait(that.diffDur);
+            });
+        });
+
+        return p.then(function () {
+
+            wait(that.unitDur);
+
+        }).then(function () {
+
+            return that;
+        });
+    };
+
+<span id='jQuery'>    /**
+</span>     * @class jQuery
+     */
+
+<span id='jQuery-method-infoPane'>    /**
+</span>     * Creates info pane.
+     *
+     *     $(&#39;.main&#39;).infoPane(8, 4, {unitDur: 400}).show().then(function (ip) {
+     *         ip.$dom.click(function () {
+     *             ip.hide();
+     *         });
+     *     });
+     *
+     * @method infoPane
+     * @param {Number} n The horizontal partition number
+     * @param {Number} m The vertical partition number
+     * @param {Object} opts The options
+     * @param {Number} opts.width The pane&#39;s width (default: the dom&#39;s width)
+     * @param {Number} opts.height The pane&#39;s height (default: the dom&#39;s height)
+     * @param {Number} opts.unitDur The unit duration of flip of small chip inside the pane (default: 400)
+     * @param {String} opts.bgcolor The background color of the pane (default: &#39;#393F44&#39;)
+     * @param {Number} opts.zIndex The z-index of the pane (default: undefined);
+     * @return {InfoPane} InfoPane object
+     *
+     */
+    $.fn.infoPane = function (n, m, opts) {
+        opts = opts || {};
+
+        var ip = new InfoPane(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
+
+        return ip;
+
+    };
+
+}(window.jQuery));
+</pre>
+</body>
+</html>
