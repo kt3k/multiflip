@@ -1,8 +1,8 @@
 ---
-version: 0.1.0
+version: 0.1.1
 files:
   README.md: v%.%.%
   bower.json: '"version": "%.%.%"'
-  .jsduck.release.json: 
-    - (v%.%.%)
-    - doc/v%.%.%
+  ".jsduck.release.json":
+  - "(v%.%.%)"
+  - doc/v%.%.%
