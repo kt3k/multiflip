@@ -56,6 +56,7 @@
      * Initializes the info pane.
      *
      * @method init
+     * @private
      */
     ipPt.init = function () {
         this.$dom.width(this.w).height(this.h);
