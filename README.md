@@ -1,4 +1,4 @@
-# info-pane v0.1.1
+# info-pane v0.1.2
 
 > pata pata info pane for game ui. (jQuery plugin)
 
@@ -6,4 +6,4 @@
 
 ### [demo](http://kt3k.github.io/info-pane/test.html) (chrome)
 
-### [API doc](http://kt3k.github.io/info-pane/doc/v0.1.1/)
+### [API doc](http://kt3k.github.io/info-pane/doc/v0.1.2/)
