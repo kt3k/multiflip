@@ -1,6 +1,6 @@
 {
   "name": "patapata",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Animation of dom, flipping its sections for showing and hiding the whole",
   "main": "index.js",
   "directories": {

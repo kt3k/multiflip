@@ -1,7 +1,7 @@
 {
   "name": "patapata",
   "main": "index.js",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "repository": "https://github.com/kt3k/patapata.git",
   "authors": [
     "Yoshiya Hinosawa <stibium121@gmail.com>"

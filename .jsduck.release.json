@@ -1,6 +1,6 @@
 {
-    "--title": "info-pane (v0.1.2) API documentation",
-    "--output": "doc/v0.1.2",
+    "--title": "info-pane (v1.0.0) API documentation",
+    "--output": "doc/v1.0.0",
     "--warnings": "-nodoc",
     "--": "index.js"
 }
