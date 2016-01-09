@@ -1,0 +1,29 @@
+{
+  "name": "patapata",
+  "version": "0.1.2",
+  "description": "Animation of dom, flipping its sections for showing and hiding the whole",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kt3k/patapata.git"
+  },
+  "keywords": [
+    "jqueryplugin",
+    "animation",
+    "flip",
+    "flipping",
+    "dom"
+  ],
+  "author": "Yoshiya Hinosawa <stibium121@gmail.com> (https://twitter.com/kt3k)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kt3k/patapata/issues"
+  },
+  "homepage": "https://github.com/kt3k/patapata#readme"
+}

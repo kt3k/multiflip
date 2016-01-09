@@ -1,12 +1,12 @@
 {
-  "name": "info-pane",
+  "name": "patapata",
   "main": "index.js",
   "version": "0.1.2",
-  "repository": "https://github.com/kt3k/info-pane.git",
+  "repository": "https://github.com/kt3k/patapata.git",
   "authors": [
     "Yoshiya Hinosawa <stibium121@gmail.com>"
   ],
-  "description": "pata pata info pane for game ui.",
+  "description": "Animation of dom, flipping its sections for showing and hiding the whole",
   "license": "MIT",
   "ignore": [
     "**/.*",

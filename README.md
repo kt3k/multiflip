@@ -1,6 +1,6 @@
-# info-pane v0.1.2
+# patapata v0.1.2
 
-> pata pata info pane for game ui. (jQuery plugin)
+> Animation of dom, flipping its sections for showing and hiding the whole
 
 ***Note:*** This library depends on jQuery and es6-promise.
 
