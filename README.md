@@ -20,6 +20,6 @@ $(function () {
 </script>
 ```
 
-### [demo](http://kt3k.github.io/info-pane/test.html) (chrome)
+### [demo](http://kt3k.github.io/patapata/test.html) (chrome)
 
-### [API doc](http://kt3k.github.io/info-pane/doc/v1.1.0/)
+### [API doc](http://kt3k.github.io/patapata/doc/v1.1.0/)

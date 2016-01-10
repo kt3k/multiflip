@@ -1,5 +1,5 @@
 {
-    "--title": "info-pane (v1.1.0) API documentation",
+    "--title": "patapata (v1.1.0) API documentation",
     "--output": "doc/v1.1.0",
     "--warnings": "-nodoc",
     "--": "index.js"
