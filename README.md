@@ -1,4 +1,4 @@
-# patapata v1.0.0
+# patapata v1.1.0
 
 > Animation of dom, flipping its sections for showing and hiding the whole
 
@@ -22,4 +22,4 @@ $(function () {
 
 ### [demo](http://kt3k.github.io/info-pane/test.html) (chrome)
 
-### [API doc](http://kt3k.github.io/info-pane/doc/v1.0.0/)
+### [API doc](http://kt3k.github.io/info-pane/doc/v1.1.0/)
