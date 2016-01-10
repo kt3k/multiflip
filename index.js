@@ -207,4 +207,6 @@
 
     };
 
+    $.fn.patapata = $.fn.infoPane;
+
 }(window.jQuery));
