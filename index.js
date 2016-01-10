@@ -1,4 +1,3 @@
-
 (function ($) {
     'use strict';
 
@@ -49,7 +48,6 @@
         this.chipClass = chipClass || defaultChipClass;
     };
 
-
     var ipPt = InfoPane.prototype;
 
     /**
@@ -66,7 +64,7 @@
         this.chipGroups = [];
 
         for (var i = 0; i < this.m; i++) {
-            for (var j = 0; j < this.n; j ++) {
+            for (var j = 0; j < this.n; j++) {
                 var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
                     .prependTo(this.$dom).addClass(this.chipClass);
 

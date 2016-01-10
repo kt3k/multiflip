@@ -1,2 +1,5 @@
 # dev doc
 /doc/dev
+
+# npm
+/node_modules

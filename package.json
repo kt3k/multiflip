@@ -7,7 +7,8 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "souffle --semi"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,13 @@
   "bugs": {
     "url": "https://github.com/kt3k/patapata/issues"
   },
-  "homepage": "https://github.com/kt3k/patapata#readme"
+  "homepage": "https://github.com/kt3k/patapata#readme",
+  "devDependencies": {
+    "souffle-cli": "^2.0.2"
+  },
+  "souffle": {
+    "ignore": [
+      "doc"
+    ]
+  }
 }
