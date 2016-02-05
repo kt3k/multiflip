@@ -1,5 +1,5 @@
 {
-  "name": "patapata",
+  "name": "multiflip",
   "version": "1.1.0",
   "description": "Animation of dom, flipping its sections for showing and hiding the whole",
   "main": "index.js",

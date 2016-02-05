@@ -9,17 +9,21 @@
     var flipTransform = 'rotate3d(1, -1, 0, -180deg)';
 
     var wait = function (n) {
+
         return new Promise(function (resolve) {
+
             setTimeout(resolve, n);
+
         });
+
     };
 
     /**
-     * InfoPane class handles the behaviours of info panes.
+     * MultiFlip class handles the behaviours of multi-flipping.
      *
-     * @class InfoPane
+     * @class MultiFlip
      */
-    var InfoPane = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
+    var MultiFlip = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
         this.$dom = $dom;
         this.$content = $('*', $dom);
         this.w = width || $dom.width();
@@ -48,7 +52,7 @@
         this.chipClass = chipClass || defaultChipClass;
     };
 
-    var ipPt = InfoPane.prototype;
+    var ipPt = MultiFlip.prototype;
 
     /**
      * Initializes the info pane.
@@ -176,15 +180,15 @@
      */
 
     /**
-     * Creates info pane.
+     * Perform multifliping on the element.
      *
-     *     $('.main').infoPane(8, 4, {unitDur: 400}).show().then(function (ip) {
-     *         ip.$dom.click(function () {
-     *             ip.hide();
+     *     $('.main').multiflip(8, 4, {unitDur: 400}).show().then(function (mf) {
+     *         mf.$dom.click(function () {
+     *             mf.hide();
      *         });
      *     });
      *
-     * @method infoPane
+     * @method multiflip
      * @param {Number} n The horizontal partition number
      * @param {Number} m The vertical partition number
      * @param {Object} [opts] The options
@@ -196,15 +200,14 @@
      * @return {InfoPane} InfoPane object
      *
      */
-    $.fn.infoPane = function (n, m, opts) {
+    $.fn.multiflip = function (n, m, opts) {
+
         opts = opts || {};
 
-        var ip = new InfoPane(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
+        var ip = new MultiFlip(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
 
         return ip;
 
     };
 
-    $.fn.patapata = $.fn.infoPane;
-
-}(window.jQuery));
+}(jQuery));
