@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "souffle --semi"
+    "lint": "souffle"
   },
   "repository": {
     "type": "git",
@@ -28,11 +28,16 @@
   },
   "homepage": "https://github.com/kt3k/patapata#readme",
   "devDependencies": {
+    "class-component": "^5.5.3",
+    "jquery": "^2.2.0",
     "souffle-cli": "^2.0.2"
   },
   "souffle": {
     "ignore": [
       "doc"
+    ],
+    "globals": [
+      "jQuery"
     ]
   }
 }

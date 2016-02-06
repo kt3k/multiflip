@@ -1,183 +1,214 @@
 (function ($) {
-    'use strict';
+    'use strict'
 
-    var defaultUnitDur = 400;
+    var defaultUnitDur = 400
 
-    var defaultBgcolor = '#393F44';
-    var defaultChipClass = 'chipClass';
+    var defaultBgcolor = '#393F44'
+    var defaultChipClass = 'chipClass'
 
-    var flipTransform = 'rotate3d(1, -1, 0, -180deg)';
+    var flipTransform = 'rotate3d(1, -1, 0, -180deg)'
 
     var wait = function (n) {
 
         return new Promise(function (resolve) {
 
-            setTimeout(resolve, n);
+            setTimeout(resolve, n)
 
-        });
+        })
 
-    };
+    }
 
-    /**
-     * MultiFlip class handles the behaviours of multi-flipping.
-     *
-     * @class MultiFlip
-     */
-    var MultiFlip = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
-        this.$dom = $dom;
-        this.$content = $('*', $dom);
-        this.w = width || $dom.width();
-        this.h = height || $dom.height();
+    var MultiFlip = $.cc.subclass(function (pt) {
 
-        if (!this.w) {
-            console.log('error: dom width unavailable');
-            return null;
-        }
+        /**
+         * MultiFlip class handles the behaviours of multi-flipping.
+         *
+         * @class MultiFlip
+         */
+        pt.constructor = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
 
-        if (!this.h) {
-            console.log('error: dom width unavailable');
-            return null;
-        }
+            this.$dom = $dom
+            this.$content = $('*', $dom)
+            this.w = width || $dom.width()
+            this.h = height || $dom.height()
 
-        this.m = m;
-        this.n = n;
-        this.uw = this.w / m;
-        this.uh = this.h / n;
+            if (!this.w) {
 
-        this.unitDur = unitDur;
-        this.diffDur = unitDur / (m + n);
+                console.log('error: dom width unavailable')
+                return null
 
-        this.bgcolor = bgcolor;
-
-        this.chipClass = chipClass || defaultChipClass;
-    };
-
-    var ipPt = MultiFlip.prototype;
-
-    /**
-     * Initializes the info pane.
-     *
-     * @method init
-     * @private
-     */
-    ipPt.init = function () {
-        this.$dom.width(this.w).height(this.h);
-
-        this.$content.css({opacity: 0, transitionDuration: this.unitDur + 'ms'});
-
-        this.chipGroups = [];
-
-        for (var i = 0; i < this.m; i++) {
-            for (var j = 0; j < this.n; j++) {
-                var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
-                    .prependTo(this.$dom).addClass(this.chipClass);
-
-                var group = i + j;
-
-                (this.chipGroups[group] = this.chipGroups[group] || []).push(chip);
             }
+
+            if (!this.h) {
+
+                console.log('error: dom height unavailable')
+                return null
+
+            }
+
+            this.m = m
+            this.n = n
+            this.uw = this.w / m
+            this.uh = this.h / n
+
+            this.unitDur = unitDur
+            this.diffDur = unitDur / (m + n)
+
+            this.bgcolor = bgcolor
+
+            this.chipClass = chipClass || defaultChipClass
+
         }
 
-        return this;
-    };
+        /**
+         * Initializes the info pane.
+         *
+         * @method init
+         * @private
+         */
+        pt.init = function () {
 
-    /**
-     * Creates the pane's chip
-     *
-     * @method createChip
-     * @param {Number} left The left offset
-     * @param {Number} top The top offset
-     * @param {Number} w The width
-     * @param {Number} h The height
-     * @private
-     */
-    ipPt.createChip = function (left, top, w, h) {
-        return $('<div />').css({
-            position: 'absolute',
-            left: left + 'px',
-            top: top + 'px',
-            width: w + 'px',
-            height: h + 'px',
-            backgroundColor: this.bgcolor,
-            transitionDuration: this.unitDur + 'ms',
-            transform: flipTransform,
-            backfaceVisibility: 'hidden'
-        });
-    };
+            this.$dom.width(this.w).height(this.h)
 
-    /**
-     * Shows info pane.
-     *
-     * @method show
-     * @return {Promise}
-     */
-    ipPt.show = function () {
-        this.init();
+            this.$content.css({opacity: 0, transitionDuration: this.unitDur + 'ms'})
 
-        var that = this;
-        var p = wait();
+            this.chipGroups = []
 
-        this.chipGroups.forEach(function (group) {
-            p = p.then(function () {
+            for (var i = 0; i < this.m; i++) {
 
-                group.forEach(function (chip) {
-                    chip.css('transform', '');
-                });
+                for (var j = 0; j < this.n; j++) {
 
-                return wait(that.diffDur);
-            });
-        });
+                    var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
+                        .prependTo(this.$dom).addClass(this.chipClass)
 
-        return p.then(function () {
+                    var group = i + j
 
-            return wait(that.unitDur / 2);
+                    this.chipGroups[group] = this.chipGroups[group] || []
+                    this.chipGroups[group].push(chip)
 
-        }).then(function () {
-            that.$content.css('opacity', 1);
+                }
 
-            return wait(that.unitDur);
-        }).then(function () {
+            }
 
-            return that;
-        });
-    };
+            return this
 
-    /**
-     * Hides info pane.
-     *
-     * @method hide
-     * @return {Promise}
-     */
-    ipPt.hide = function () {
-        var that = this;
+        }
 
-        this.$content.css('opacity', 0);
-        var p = wait(that.unitDur);
+        /**
+         * Creates the pane's chip
+         *
+         * @method createChip
+         * @param {Number} left The left offset
+         * @param {Number} top The top offset
+         * @param {Number} w The width
+         * @param {Number} h The height
+         * @private
+         */
+        pt.createChip = function (left, top, w, h) {
 
-        this.chipGroups.forEach(function (group) {
-            p = p.then(function () {
+            return $('<div />').css({
+                position: 'absolute',
+                left: left + 'px',
+                top: top + 'px',
+                width: w + 'px',
+                height: h + 'px',
+                backgroundColor: this.bgcolor,
+                transitionDuration: this.unitDur + 'ms',
+                transform: flipTransform,
+                backfaceVisibility: 'hidden'
+            })
 
-                group.forEach(function (chip) {
-                    chip.css('transform', flipTransform);
-                });
+        }
 
-                return wait(that.diffDur);
-            });
-        });
+        /**
+         * Shows info pane.
+         *
+         * @method show
+         * @return {Promise}
+         */
+        pt.show = function () {
 
-        return p.then(function () {
+            this.init()
 
-            wait(that.unitDur);
+            var that = this
+            var p = wait()
 
-        }).then(function () {
+            this.chipGroups.forEach(function (group) {
 
-            return that;
-        });
-    };
+                p = p.then(function () {
 
-    /**
-     * @class jQuery
-     */
+                    group.forEach(function (chip) {
+
+                        chip.css('transform', '')
+
+                    })
+
+                    return wait(that.diffDur)
+
+                })
+
+            })
+
+            return p.then(function () {
+
+                return wait(that.unitDur / 2)
+
+            }).then(function () {
+
+                that.$content.css('opacity', 1)
+
+                return wait(that.unitDur)
+
+            }).then(function () {
+
+                return that
+
+            })
+
+        }
+
+        /**
+         * Hides info pane.
+         *
+         * @method hide
+         * @return {Promise}
+         */
+        pt.hide = function () {
+
+            var that = this
+
+            this.$content.css('opacity', 0)
+            var p = wait(that.unitDur)
+
+            this.chipGroups.forEach(function (group) {
+
+                p = p.then(function () {
+
+                    group.forEach(function (chip) {
+
+                        chip.css('transform', flipTransform)
+
+                    })
+
+                    return wait(that.diffDur)
+
+                })
+
+            })
+
+            return p.then(function () {
+
+                wait(that.unitDur)
+
+            }).then(function () {
+
+                return that
+
+            })
+
+        }
+
+    })
 
     /**
      * Perform multifliping on the element.
@@ -202,12 +233,12 @@
      */
     $.fn.multiflip = function (n, m, opts) {
 
-        opts = opts || {};
+        opts = opts || {}
 
-        var ip = new MultiFlip(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex);
+        var ip = new MultiFlip(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex)
 
-        return ip;
+        return ip
 
-    };
+    }
 
-}(jQuery));
+}(jQuery))
