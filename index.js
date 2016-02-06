@@ -1,12 +1,12 @@
 (function ($) {
     'use strict'
 
-    var defaultUnitDur = 400
+    var DEFAULT_UNIT_DIR = 400
 
-    var defaultBgcolor = '#393F44'
-    var defaultChipClass = 'chipClass'
+    var DEFAULT_BGCOLOR = '#393F44'
+    var DEFAULT_CHIP_CLASS = 'chipClass'
 
-    var flipTransform = 'rotate3d(1, -1, 0, -180deg)'
+    var FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)'
 
     var wait = function (n) {
 
@@ -18,13 +18,13 @@
 
     }
 
-    var MultiFlip = $.cc.subclass(function (pt) {
+    /**
+     * Multiflip class handles the behaviours of multi-flipping.
+     *
+     * @class Multiflip
+     */
+    var Multiflip = $.cc.subclass(function (pt) {
 
-        /**
-         * MultiFlip class handles the behaviours of multi-flipping.
-         *
-         * @class MultiFlip
-         */
         pt.constructor = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
 
             this.$dom = $dom
@@ -56,12 +56,12 @@
 
             this.bgcolor = bgcolor
 
-            this.chipClass = chipClass || defaultChipClass
+            this.chipClass = chipClass || DEFAULT_CHIP_CLASS
 
         }
 
         /**
-         * Initializes the info pane.
+         * Initializes the multiflip.
          *
          * @method init
          * @private
@@ -114,14 +114,14 @@
                 height: h + 'px',
                 backgroundColor: this.bgcolor,
                 transitionDuration: this.unitDur + 'ms',
-                transform: flipTransform,
+                transform: FLIP_TRANSFORM,
                 backfaceVisibility: 'hidden'
             })
 
         }
 
         /**
-         * Shows info pane.
+         * Performs multiflipping and shows the content.
          *
          * @method show
          * @return {Promise}
@@ -168,7 +168,7 @@
         }
 
         /**
-         * Hides info pane.
+         * Perfoms multiflipping and hides the content.
          *
          * @method hide
          * @return {Promise}
@@ -186,7 +186,7 @@
 
                     group.forEach(function (chip) {
 
-                        chip.css('transform', flipTransform)
+                        chip.css('transform', FLIP_TRANSFORM)
 
                     })
 
@@ -213,13 +213,13 @@
     /**
      * Perform multifliping on the element.
      *
+     * @example
      *     $('.main').multiflip(8, 4, {unitDur: 400}).show().then(function (mf) {
      *         mf.$dom.click(function () {
      *             mf.hide();
      *         });
      *     });
      *
-     * @method multiflip
      * @param {Number} n The horizontal partition number
      * @param {Number} m The vertical partition number
      * @param {Object} [opts] The options
@@ -228,14 +228,14 @@
      * @param {Number} [opts.unitDur=400] The unit duration of flip of small chip inside the pane
      * @param {String} [opts.bgcolor='#393F44'] The background color of the pane
      * @param {Number} [opts.zIndex=undefined] The z-index of the pane
-     * @return {InfoPane} InfoPane object
+     * @return {Multiflip}
      *
      */
     $.fn.multiflip = function (n, m, opts) {
 
         opts = opts || {}
 
-        var ip = new MultiFlip(this, n, m, opts.width, opts.height, opts.unitDur || defaultUnitDur, opts.bgcolor || defaultBgcolor, opts.zIndex)
+        var ip = new Multiflip(this, n, m, opts.width, opts.height, opts.unitDur || DEFAULT_UNIT_DIR, opts.bgcolor || DEFAULT_BGCOLOR, opts.zIndex)
 
         return ip
 
