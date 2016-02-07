@@ -30,3 +30,13 @@ The meaning of attrs:
 - attr {string} bgcolor The background color
 
 ### [demo](http://kt3k.github.io/multiflip/test.html) (chrome)
+
+# Install
+
+Via npm:
+
+    npm install multiflip
+
+# License
+
+MIT
