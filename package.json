@@ -1,6 +1,6 @@
 {
   "name": "multiflip",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Animation of dom, flipping its sections for showing and hiding the whole",
   "main": "index.js",
   "directories": {
