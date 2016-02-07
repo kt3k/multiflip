@@ -1,4 +1,4 @@
-# multiflip v1.1.0
+# multiflip v2.0.0
 
 > Animation of dom, flipping its sections for showing and hiding the whole
 
