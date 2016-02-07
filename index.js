@@ -2,11 +2,15 @@
     'use strict'
 
     var DEFAULT_UNIT_DIR = 400
+    var DEFAULT_CONTENT_SHOW_DUR = 400
+
+    var DEFAULT_M = 4
+    var DEFAULT_N = 4
 
     var DEFAULT_BGCOLOR = '#393F44'
-    var DEFAULT_CHIP_CLASS = 'chipClass'
+    var CHIP_CLASS = 'multiflip-chip'
 
-    var FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)'
+    var FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)' // Transformation for the flipping a chip
 
     var wait = function (n) {
 
@@ -21,42 +25,37 @@
     /**
      * Multiflip class handles the behaviours of multi-flipping.
      *
-     * @class Multiflip
+     * <div class="multiflip" m="6" n="4" unit-dur="400" bgcolor="#4588aa"></div>
+     *
+     * - param {number} m The horizontal partition number
+     * - param {number} n The vertical partition number
+     * - param {number} unit-dur The unit duration of multiflipping
+     * - param {number} content-show-dur The duration of showing and hiding the content
+     * - param {string} bgcolor The background color of the flipping chips
      */
-    var Multiflip = $.cc.subclass(function (pt) {
+    var Multiflip = $.cc.subclass($.cc.Coelement, function (pt, parent) {
 
-        pt.constructor = function ($dom, m, n, width, height, unitDur, bgcolor, chipClass) {
+        pt.constructor = function (elem) {
 
-            this.$dom = $dom
-            this.$content = $('*', $dom)
-            this.w = width || $dom.width()
-            this.h = height || $dom.height()
+            parent.constructor.call(this, elem)
 
-            if (!this.w) {
+            this.content = $('*', elem)
+            this.w = elem.width()
+            this.h = elem.height()
 
-                console.log('error: dom width unavailable')
-                return null
+            this.m = +elem.attr('m') || DEFAULT_M
+            this.n = +elem.attr('n') || DEFAULT_N
+            this.uw = this.w / this.m
+            this.uh = this.h / this.n
 
-            }
+            this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR
+            this.diffDur = this.unitDur / (this.m + this.n)
 
-            if (!this.h) {
+            this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR
 
-                console.log('error: dom height unavailable')
-                return null
+            this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR
 
-            }
-
-            this.m = m
-            this.n = n
-            this.uw = this.w / m
-            this.uh = this.h / n
-
-            this.unitDur = unitDur
-            this.diffDur = unitDur / (m + n)
-
-            this.bgcolor = bgcolor
-
-            this.chipClass = chipClass || DEFAULT_CHIP_CLASS
+            this.init()
 
         }
 
@@ -68,9 +67,10 @@
          */
         pt.init = function () {
 
-            this.$dom.width(this.w).height(this.h)
-
-            this.$content.css({opacity: 0, transitionDuration: this.unitDur + 'ms'})
+            this.content.css({
+                opacity: 0, // sets the content invisible at first
+                transitionDuration: this.contentShowDur + 'ms' // sets the content's transition duration
+            })
 
             this.chipGroups = []
 
@@ -79,7 +79,7 @@
                 for (var j = 0; j < this.n; j++) {
 
                     var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
-                        .prependTo(this.$dom).addClass(this.chipClass)
+                        .prependTo(this.elem).addClass(CHIP_CLASS)
 
                     var group = i + j
 
@@ -128,14 +128,16 @@
          */
         pt.show = function () {
 
-            this.init()
-
             var that = this
             var p = wait()
 
-            this.chipGroups.forEach(function (group) {
+            return this.chipGroups.map(function (group, i) {
 
-                p = p.then(function () {
+                return p.then(function () {
+
+                    return wait(that.diffDur * i)
+
+                }).then(function () {
 
                     group.forEach(function (chip) {
 
@@ -143,25 +145,14 @@
 
                     })
 
-                    return wait(that.diffDur)
+                    return wait(that.unitDur * 3 / 4) // Ignore the last 25% of the flipping for the moment and starts showing the content.
 
                 })
 
-            })
+            }).pop().then(function () {
 
-            return p.then(function () {
-
-                return wait(that.unitDur / 2)
-
-            }).then(function () {
-
-                that.$content.css('opacity', 1)
-
-                return wait(that.unitDur)
-
-            }).then(function () {
-
-                return that
+                that.content.css('opacity', 1) // shows the content
+                return wait(that.contentShowDur) // waits for the content showing
 
             })
 
@@ -177,12 +168,16 @@
 
             var that = this
 
-            this.$content.css('opacity', 0)
-            var p = wait(that.unitDur)
+            this.content.css('opacity', 0) // hides the content
+            var p = wait(that.contentShowDur) // waits the content hiding
 
-            this.chipGroups.forEach(function (group) {
+            return this.chipGroups.map(function (group, i) {
 
-                p = p.then(function () {
+                return p.then(function () {
+
+                    return wait(that.diffDur * i)
+
+                }).then(function () {
 
                     group.forEach(function (chip) {
 
@@ -190,55 +185,16 @@
 
                     })
 
-                    return wait(that.diffDur)
+                    return wait(that.unitDur / 2) // waits only the half of the unit dur because when the chip is half flipped, then it's already invisible.
 
                 })
 
-            })
-
-            return p.then(function () {
-
-                wait(that.unitDur)
-
-            }).then(function () {
-
-                return that
-
-            })
+            }).pop()
 
         }
 
     })
 
-    /**
-     * Perform multifliping on the element.
-     *
-     * @example
-     *     $('.main').multiflip(8, 4, {unitDur: 400}).show().then(function (mf) {
-     *         mf.$dom.click(function () {
-     *             mf.hide();
-     *         });
-     *     });
-     *
-     * @param {Number} n The horizontal partition number
-     * @param {Number} m The vertical partition number
-     * @param {Object} [opts] The options
-     * @param {Number} [opts.width=this.width()] The pane's width
-     * @param {Number} [opts.height=this.height()] The pane's height
-     * @param {Number} [opts.unitDur=400] The unit duration of flip of small chip inside the pane
-     * @param {String} [opts.bgcolor='#393F44'] The background color of the pane
-     * @param {Number} [opts.zIndex=undefined] The z-index of the pane
-     * @return {Multiflip}
-     *
-     */
-    $.fn.multiflip = function (n, m, opts) {
-
-        opts = opts || {}
-
-        var ip = new Multiflip(this, n, m, opts.width, opts.height, opts.unitDur || DEFAULT_UNIT_DIR, opts.bgcolor || DEFAULT_BGCOLOR, opts.zIndex)
-
-        return ip
-
-    }
+    $.cc.component('multiflip')(Multiflip)
 
 }(jQuery))

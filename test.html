@@ -1,19 +1,32 @@
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <script src="node_modules/class-component/dist.min.js"></script>
+<script src="node_modules/cc-event/cc-event.js"></script>
 <script src="index.js"></script>
 <script>
 $(function () {
-    $('.main').multiflip(8, 4, {unitDur: 500}).show().then(function (pp) {
-        pp.$dom.click(function () {
-            pp.hide();
-        });
+
+    var demo = function (mf) {
+
+        mf.show().then(function () {
+
+            mf.hide().then(function () { demo(mf) })
+
+        })
+
+    }
+
+    $('.multiflip').each(function () {
+
+        demo($(this).cc.get('multiflip'))
+
     });
+
 });
 
 </script>
 
 <style>
-.main {
+.multiflip {
     color: white;
     transition-duration: 500ms;
     text-align: center;
@@ -21,12 +34,24 @@ $(function () {
     position: relative;
     width: 400px;
     height: 200px;
+    margin-bottom: 15px;
+    display: inline-block;
 }
 
-.main .content {
+.multiflip .content {
     position: relative;
+    line-height: 200px;
+    font-size: 3em;
     opacity: 0;
 }
 </style>
 
-<div class="main"><div class="content">aaa</div></div>
+<div class="multiflip" m="8" n="4" unit-dur="400" bgcolor="#115588"><div class="content">Example</div></div>
+<div class="multiflip" m="8" n="4" unit-dur="800" bgcolor="#885511"><div class="content">Example</div></div>
+<div class="multiflip" m="16" n="8" unit-dur="3200" bgcolor="#881155"><div class="content">Example</div></div>
+<div class="multiflip" m="16" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
+<div class="multiflip" m="16" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
+<div class="multiflip" m="16" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
+<div class="multiflip" m="8" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
+<div class="multiflip" m="8" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
+<div class="multiflip" m="8" n="8" unit-dur="6400" bgcolor="#111111"><div class="content">Example</div></div>
