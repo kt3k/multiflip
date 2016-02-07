@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kt3k/patapata.git"
+    "url": "git+https://github.com/kt3k/multiflip.git"
   },
   "keywords": [
     "jqueryplugin",
@@ -24,9 +24,9 @@
   "author": "Yoshiya Hinosawa <stibium121@gmail.com> (https://twitter.com/kt3k)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kt3k/patapata/issues"
+    "url": "https://github.com/kt3k/multiflip/issues"
   },
-  "homepage": "https://github.com/kt3k/patapata#readme",
+  "homepage": "https://github.com/kt3k/multiflip#readme",
   "devDependencies": {
     "class-component": "^5.5.3",
     "jquery": "^2.2.0",
