@@ -6,20 +6,27 @@
 
 # Usage
 
+Load jquery, class-component and multiflip, then put dom with the class name `multiflip`.
+
 ```js
-<script src="jquery.min.js"></script>
-<script src="multiflip.js"></script>
-<script>
-$(function () {
-    $('.main').multiflip(8, 4, {unitDur: 500}).show().then(function (pp) {
-        pp.$dom.click(function () {
-            pp.hide();
-        });
-    });
-});
-</script>
+<script src="path/to/jquery.js"></script>
+<script src="path/to/class-component.js"></script>
+<script src="path/to/multiflip.js"></script>
+
+<div class="multiflip" m="8" n="4" unit-dur="400" bgcolor="#115588">
+  <div class="content">Example</div>
+</div>
+
+<style>
+.multiflip { width: 400px; height: 200px; }
+</style>
 ```
 
-### [demo](http://kt3k.github.io/multiflip/test.html) (chrome)
+The meaning of attrs:
+- attr {number} m The horizontal partition number
+- attr {number} n The vertical partition number
+- attr {number} unit-dur The duration showing and hiding the unit chip. default 400
+- attr {number} content-show-dur The duration of showing and hiding the content. default 400
+- attr {string} bgcolor The background color
 
-### [API doc](http://kt3k.github.io/multiflip/doc/v1.1.0/)
+### [demo](http://kt3k.github.io/multiflip/test.html) (chrome)
