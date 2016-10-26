@@ -37,9 +37,9 @@
     "babel-preset-es2015": "^6.9.0",
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
-    "class-component": "^8.0.0",
-    "jquery": "^2.2.0",
-    "souffle-cli": "^2.0.2"
+    "class-component": "^11.0.2",
+    "jquery": "^3.1.1",
+    "souffle-cli": "^3.1.1"
   },
   "souffle": {
     "ignore": [
