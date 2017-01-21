@@ -1,25 +1,18 @@
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
-<script src="node_modules/class-component/dist/class-component.min.js"></script>
+<script src="node_modules/capsid/dist/capsid.js"></script>
+<script src="node_modules/capsid/dist/capsid-jquery.min.js"></script>
 <script src="multiflip.js"></script>
 <script>
 $(function () {
-
     var demo = function (mf) {
-
         mf.show().then(function () {
-
             mf.hide().then(function () { demo(mf) })
-
         })
-
     }
 
     $('.multiflip').each(function () {
-
         demo($(this).cc.get('multiflip'))
-
     });
-
 });
 
 </script>

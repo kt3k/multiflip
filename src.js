@@ -25,10 +25,9 @@ const wait = n => new Promise(resolve => setTimeout(resolve, n))
  * - attr {string} bgcolor The background color of the flipping chips
  */
 class Multiflip {
-  /**
-   * @param {jQuery} elem The jquery dom
-   */
-  constructor (elem) {
+
+  __init__ () {
+    const elem = this.$el
     this.content = $('*', elem)
     this.w = elem.width()
     this.h = elem.height()
@@ -163,4 +162,4 @@ class Multiflip {
   }
 }
 
-$.cc('multiflip', Multiflip)
+capsid.def('multiflip', Multiflip)

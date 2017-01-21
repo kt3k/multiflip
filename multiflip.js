@@ -37,39 +37,40 @@ var wait = function wait(n) {
  */
 
 var Multiflip = function () {
-  /**
-   * @param {jQuery} elem The jquery dom
-   */
-  function Multiflip(elem) {
+  function Multiflip() {
     _classCallCheck(this, Multiflip);
-
-    this.content = $('*', elem);
-    this.w = elem.width();
-    this.h = elem.height();
-
-    this.m = +elem.attr('m') || DEFAULT_M;
-    this.n = +elem.attr('n') || DEFAULT_N;
-    this.uw = this.w / this.m;
-    this.uh = this.h / this.n;
-
-    this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR;
-    this.diffDur = this.unitDur / (this.m + this.n);
-
-    this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR;
-
-    this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR;
-
-    this.init(elem);
   }
 
-  /**
-   * Initializes the multiflip.
-   * @param {jQuery} elem The jquery dom
-   * @private
-   */
-
-
   _createClass(Multiflip, [{
+    key: '__init__',
+    value: function __init__() {
+      var elem = this.$el;
+      this.content = $('*', elem);
+      this.w = elem.width();
+      this.h = elem.height();
+
+      this.m = +elem.attr('m') || DEFAULT_M;
+      this.n = +elem.attr('n') || DEFAULT_N;
+      this.uw = this.w / this.m;
+      this.uh = this.h / this.n;
+
+      this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR;
+      this.diffDur = this.unitDur / (this.m + this.n);
+
+      this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR;
+
+      this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR;
+
+      this.init(elem);
+    }
+
+    /**
+     * Initializes the multiflip.
+     * @param {jQuery} elem The jquery dom
+     * @private
+     */
+
+  }, {
     key: 'init',
     value: function init(elem) {
       this.content.css({
@@ -215,6 +216,6 @@ var Multiflip = function () {
   return Multiflip;
 }();
 
-$.cc('multiflip', Multiflip);
+capsid.def('multiflip', Multiflip);
 
 },{}]},{},[1]);
