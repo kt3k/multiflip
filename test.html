@@ -1,6 +1,5 @@
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <script src="node_modules/capsid/dist/capsid.js"></script>
-<script src="node_modules/capsid/dist/capsid-jquery.min.js"></script>
 <script src="multiflip.js"></script>
 <script>
 capsid.def('multiflip', multiflip)
@@ -13,7 +12,7 @@ setTimeout(function () {
   }
 
   $('.multiflip').each(function () {
-    demo($(this).cc.get('multiflip'))
+    demo(capsid.get('multiflip', this))
   });
 }, 400);
 

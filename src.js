@@ -30,42 +30,46 @@ export default class Multiflip {
    * Initializes the multiflip.
    */
   __init__ () {
-    const elem = this.$el
+    const elem = $(this.el)
 
-    this.content = $('*', elem)
     this.w = elem.width()
     this.h = elem.height()
 
-    this.m = +elem.attr('m') || DEFAULT_M
-    this.n = +elem.attr('n') || DEFAULT_N
+    this.m = +this.el.getAttribute('m') || DEFAULT_M
+    this.n = +this.el.getAttribute('n') || DEFAULT_N
     this.uw = this.w / this.m
     this.uh = this.h / this.n
 
-    this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR
+    this.unitDur = +this.el.getAttribute('unit-dur') || DEFAULT_UNIT_DIR
     this.diffDur = this.unitDur / (this.m + this.n)
 
-    this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR
+    this.contentShowDur = +this.el.getAttribute('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR
 
-    this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR
+    this.bgcolor = this.el.getAttribute('bgcolor') || DEFAULT_BGCOLOR
 
-    this.content.css({
-      opacity: 0, // sets the content invisible at first
-      transitionDuration: this.contentShowDur + 'ms' // sets the content's transition duration
+    this.forEachChild(child => {
+      child.style.opacity = '0'
+      child.style.transitionDuration = this.contentShowDur + 'ms'
     })
 
-    this.chips = []
+    this.chips = Array(this.n * this.m).fill().map((_, c) => {
+      const i = c % this.m
+      const j = Math.floor(c / this.m)
+      const chip = Multiflip.createChip(
+        i * this.uw,
+        j * this.uh,
+        this.uw,
+        this.uh,
+        this.diffDur * (i + j),
+        this.bgcolor,
+        this.unitDur
+      )
 
-    for (let i = 0; i < this.m; i++) {
-      for (let j = 0; j < this.n; j++) {
-        const chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh, this.diffDur * (i + j))
-          .prependTo(elem)
-          .addClass(CHIP_CLASS)
+      this.el.insertBefore(chip, this.el.firstChild)
+      chip.classList.add(CHIP_CLASS)
 
-        this.chips.push(chip)
-      }
-    }
-
-    this.lastChip = this.chips.slice(-1)
+      return chip
+    })
   }
 
   /**
@@ -76,20 +80,23 @@ export default class Multiflip {
    * @param {Number} w The width
    * @param {Number} h The height
    */
-  createChip (left, top, w, h, delay) {
-    return $('<div />').css({
-      position: 'absolute',
-      left: left + 'px',
-      top: top + 'px',
-      width: w + 'px',
-      height: h + 'px',
-      backgroundColor: this.bgcolor,
-      transitionDuration: this.unitDur + 'ms',
-      transitionDelay: delay + 'ms',
-      transform: FLIP_TRANSFORM,
-      backfaceVisibility: 'hidden',
-      transformStyle: 'preserve-3d'
-    })
+  static createChip (left, top, w, h, delay, bgcolor, unitDur) {
+    const div = document.createElement('div')
+    const style = div.style
+
+    style.position = 'absolute'
+    style.left = left + 'px'
+    style.top = top + 'px'
+    style.width = w + 'px'
+    style.height = h + 'px'
+    style.backgroundColor = bgcolor
+    style.transitionDuration = unitDur + 'ms'
+    style.transitionDelay = delay + 'ms'
+    style.transform = FLIP_TRANSFORM
+    style.backfaceVisibility = 'hidden'
+    style.transformStyle = 'preserve-3d'
+
+    return div
   }
 
   /**
@@ -97,7 +104,7 @@ export default class Multiflip {
    * @return {Promise}
    */
   show () {
-    this.chips.forEach(chip => chip.css('transform', ''))
+    this.chips.forEach(chip => { chip.style.transform = '' })
 
     return wait(this.unitDur * 2 - this.contentShowDur).then(() => this.showContents())
   }
@@ -108,7 +115,7 @@ export default class Multiflip {
    * @return {Promise}
    */
   showContents () {
-    this.content.css('opacity', 1) // shows the content
+    this.forEachChild(child => { child.style.opacity = '1' })
 
     return wait(this.contentShowDur) // waits for the content showing
   }
@@ -120,7 +127,7 @@ export default class Multiflip {
   hide () {
     return this.hideContents()
       .then(() => {
-        this.chips.forEach(chip => chip.css('transform', FLIP_TRANSFORM))
+        this.chips.forEach(chip => { chip.style.transform = FLIP_TRANSFORM })
 
         return wait(this.unitDur * 2)
       })
@@ -132,8 +139,16 @@ export default class Multiflip {
    * @return {Promise}
    */
   hideContents () {
-    this.content.css('opacity', 0) // hides the content
+    this.forEachChild(child => { child.style.opacity = '0' })
 
     return wait(this.contentShowDur)
+  }
+
+  /**
+   * Calls the given func on each child.
+   * @param {Function} func The function
+   */
+  forEachChild (func) {
+    Array.prototype.forEach.call(this.el.querySelectorAll(`:not(.${CHIP_CLASS})`), func)
   }
 }
