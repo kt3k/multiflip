@@ -24,7 +24,7 @@ const wait = n => new Promise(resolve => setTimeout(resolve, n))
  * - attr {number} content-show-dur The duration of showing and hiding the content
  * - attr {string} bgcolor The background color of the flipping chips
  */
-class Multiflip {
+export default class Multiflip {
 
   __init__ () {
     const elem = this.$el
@@ -161,5 +161,3 @@ class Multiflip {
     return wait(this.contentShowDur)
   }
 }
-
-capsid.def('multiflip', Multiflip)

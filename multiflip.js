@@ -1,9 +1,8 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.multiflip = factory());
+}(this, (function () { 'use strict';
 
 var $ = jQuery;
 
@@ -18,11 +17,7 @@ var CHIP_CLASS = 'multiflip-chip';
 
 var FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)'; // Transformation for the flipping a chip
 
-var wait = function wait(n) {
-  return new Promise(function (resolve) {
-    return setTimeout(resolve, n);
-  });
-};
+var wait = function (n) { return new Promise(function (resolve) { return setTimeout(resolve, n); }); };
 
 /**
  * Multiflip class handles the behaviours of multi-flipping.
@@ -35,187 +30,151 @@ var wait = function wait(n) {
  * - attr {number} content-show-dur The duration of showing and hiding the content
  * - attr {string} bgcolor The background color of the flipping chips
  */
+var Multiflip = function Multiflip () {};
 
-var Multiflip = function () {
-  function Multiflip() {
-    _classCallCheck(this, Multiflip);
+Multiflip.prototype.__init__ = function __init__ () {
+  var elem = this.$el;
+  this.content = $('*', elem);
+  this.w = elem.width();
+  this.h = elem.height();
+
+  this.m = +elem.attr('m') || DEFAULT_M;
+  this.n = +elem.attr('n') || DEFAULT_N;
+  this.uw = this.w / this.m;
+  this.uh = this.h / this.n;
+
+  this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR;
+  this.diffDur = this.unitDur / (this.m + this.n);
+
+  this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR;
+
+  this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR;
+
+  this.init(elem);
+};
+
+/**
+ * Initializes the multiflip.
+ * @param {jQuery} elem The jquery dom
+ * @private
+ */
+Multiflip.prototype.init = function init (elem) {
+    var this$1 = this;
+
+  this.content.css({
+    opacity: 0, // sets the content invisible at first
+    transitionDuration: this.contentShowDur + 'ms' // sets the content's transition duration
+  });
+
+  this.chipGroups = [];
+
+  for (var i = 0; i < this.m; i++) {
+    for (var j = 0; j < this.n; j++) {
+      var chip = this$1.createChip(i * this$1.uw, j * this$1.uh, this$1.uw, this$1.uh)
+                  .prependTo(elem).addClass(CHIP_CLASS);
+
+      var group = i + j;
+
+      this$1.chipGroups[group] = this$1.chipGroups[group] || [];
+      this$1.chipGroups[group].push(chip);
+    }
   }
 
-  _createClass(Multiflip, [{
-    key: '__init__',
-    value: function __init__() {
-      var elem = this.$el;
-      this.content = $('*', elem);
-      this.w = elem.width();
-      this.h = elem.height();
+  return this
+};
 
-      this.m = +elem.attr('m') || DEFAULT_M;
-      this.n = +elem.attr('n') || DEFAULT_N;
-      this.uw = this.w / this.m;
-      this.uh = this.h / this.n;
+/**
+ * Creates the pane's chip
+ * @private
+ * @param {Number} left The left offset
+ * @param {Number} top The top offset
+ * @param {Number} w The width
+ * @param {Number} h The height
+ */
+Multiflip.prototype.createChip = function createChip (left, top, w, h) {
+  return $('<div />').css({
+    position: 'absolute',
+    left: left + 'px',
+    top: top + 'px',
+    width: w + 'px',
+    height: h + 'px',
+    backgroundColor: this.bgcolor,
+    transitionDuration: this.unitDur + 'ms',
+    transform: FLIP_TRANSFORM,
+    backfaceVisibility: 'hidden',
+    transformStyle: 'preserve-3d'
+  })
+};
 
-      this.unitDur = +elem.attr('unit-dur') || DEFAULT_UNIT_DIR;
-      this.diffDur = this.unitDur / (this.m + this.n);
+/**
+ * Performs multiflipping and shows the content.
+ * @return {Promise}
+ */
+Multiflip.prototype.show = function show () {
+    var this$1 = this;
 
-      this.contentShowDur = +elem.attr('content-show-dur') || DEFAULT_CONTENT_SHOW_DUR;
+  return this.chipGroups
+      .map(function (group, i) { return wait(this$1.diffDur * i).then(function () {
+        group.forEach(function (chip) { return chip.css('transform', ''); });
 
-      this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR;
-
-      this.init(elem);
-    }
-
-    /**
-     * Initializes the multiflip.
-     * @param {jQuery} elem The jquery dom
-     * @private
-     */
-
-  }, {
-    key: 'init',
-    value: function init(elem) {
-      this.content.css({
-        opacity: 0, // sets the content invisible at first
-        transitionDuration: this.contentShowDur + 'ms' // sets the content's transition duration
-      });
-
-      this.chipGroups = [];
-
-      for (var i = 0; i < this.m; i++) {
-        for (var j = 0; j < this.n; j++) {
-          var chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh).prependTo(elem).addClass(CHIP_CLASS);
-
-          var group = i + j;
-
-          this.chipGroups[group] = this.chipGroups[group] || [];
-          this.chipGroups[group].push(chip);
-        }
-      }
-
-      return this;
-    }
-
-    /**
-     * Creates the pane's chip
-     * @private
-     * @param {Number} left The left offset
-     * @param {Number} top The top offset
-     * @param {Number} w The width
-     * @param {Number} h The height
-     */
-
-  }, {
-    key: 'createChip',
-    value: function createChip(left, top, w, h) {
-      return $('<div />').css({
-        position: 'absolute',
-        left: left + 'px',
-        top: top + 'px',
-        width: w + 'px',
-        height: h + 'px',
-        backgroundColor: this.bgcolor,
-        transitionDuration: this.unitDur + 'ms',
-        transform: FLIP_TRANSFORM,
-        backfaceVisibility: 'hidden',
-        transformStyle: 'preserve-3d'
-      });
-    }
-
-    /**
-     * Performs multiflipping and shows the content.
-     * @return {Promise}
-     */
-
-  }, {
-    key: 'show',
-    value: function show() {
-      var _this = this;
-
-      return this.chipGroups.map(function (group, i) {
-        return wait(_this.diffDur * i).then(function () {
-          group.forEach(function (chip) {
-            return chip.css('transform', '');
-          });
-
-          return wait(_this.unitDur * 3 / 4);
+        return wait(this$1.unitDur * 3 / 4)
           // Ignore the last 25% of the flipping for the moment and
           // starts showing the content.
-        });
-      }).pop().then(function () {
-        return _this.showContents();
-      });
-    }
+      }); })
+      .pop()
+      .then(function () { return this$1.showContents(); })
+};
 
-    /**
-     * Shows the contents.
-     * @private
-     * @return {Promise}
-     */
+/**
+ * Shows the contents.
+ * @private
+ * @return {Promise}
+ */
+Multiflip.prototype.showContents = function showContents () {
+  this.content.css('opacity', 1); // shows the content
 
-  }, {
-    key: 'showContents',
-    value: function showContents() {
-      this.content.css('opacity', 1); // shows the content
+  return wait(this.contentShowDur) // waits for the content showing
+};
 
-      return wait(this.contentShowDur); // waits for the content showing
-    }
+/**
+ * Perfoms multiflipping and hides the content.
+ * @return {Promise}
+ */
+Multiflip.prototype.hide = function hide () {
+    var this$1 = this;
 
-    /**
-     * Perfoms multiflipping and hides the content.
-     * @return {Promise}
-     */
+  return this.hideContents()
+      .then(function () { return this$1.chipGroups.map(function (group, i) { return this$1.hideChipGroupWithDelay(group, this$1.diffDur * i); }).pop(); })
+};
 
-  }, {
-    key: 'hide',
-    value: function hide() {
-      var _this2 = this;
+/**
+ * Hides the group of the chip with the given delay
+ * @param {jQuery[]} group
+ * @param {number} delay
+ */
+Multiflip.prototype.hideChipGroupWithDelay = function hideChipGroupWithDelay (group, delay) {
+    var this$1 = this;
 
-      return this.hideContents().then(function () {
-        return _this2.chipGroups.map(function (group, i) {
-          return _this2.hideChipGroupWithDelay(group, _this2.diffDur * i);
-        }).pop();
-      });
-    }
+  return wait(delay).then(function () {
+    group.forEach(function (chip) { return chip.css('transform', FLIP_TRANSFORM); });
 
-    /**
-     * Hides the group of the chip with the given delay
-     * @param {jQuery[]} group
-     * @param {number} delay
-     */
+    return wait(this$1.unitDur / 2)
+          // waits only the half of the unit dur
+          // because when the chip is half flipped, then it's already invisible.
+  })
+};
 
-  }, {
-    key: 'hideChipGroupWithDelay',
-    value: function hideChipGroupWithDelay(group, delay) {
-      var _this3 = this;
+/**
+ * Hides the contents.
+ * @private
+ * @return {Promise}
+ */
+Multiflip.prototype.hideContents = function hideContents () {
+  this.content.css('opacity', 0); // hides the content
 
-      return wait(delay).then(function () {
-        group.forEach(function (chip) {
-          return chip.css('transform', FLIP_TRANSFORM);
-        });
+  return wait(this.contentShowDur)
+};
 
-        return wait(_this3.unitDur / 2);
-        // waits only the half of the unit dur
-        // because when the chip is half flipped, then it's already invisible.
-      });
-    }
+return Multiflip;
 
-    /**
-     * Hides the contents.
-     * @private
-     * @return {Promise}
-     */
-
-  }, {
-    key: 'hideContents',
-    value: function hideContents() {
-      this.content.css('opacity', 0); // hides the content
-
-      return wait(this.contentShowDur);
-    }
-  }]);
-
-  return Multiflip;
-}();
-
-capsid.def('multiflip', Multiflip);
-
-},{}]},{},[1]);
+})));
