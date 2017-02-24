@@ -3,17 +3,19 @@
 <script src="node_modules/capsid/dist/capsid-jquery.min.js"></script>
 <script src="multiflip.js"></script>
 <script>
-$(function () {
-    var demo = function (mf) {
-        mf.show().then(function () {
-            mf.hide().then(function () { demo(mf) })
-        })
-    }
+capsid.def('multiflip', multiflip)
 
-    $('.multiflip').each(function () {
-        demo($(this).cc.get('multiflip'))
-    });
-});
+setTimeout(function () {
+  var demo = function (mf) {
+    mf.show().then(function () {
+      mf.hide().then(function () { demo(mf) })
+    })
+  }
+
+  $('.multiflip').each(function () {
+    demo($(this).cc.get('multiflip'))
+  });
+}, 400);
 
 </script>
 

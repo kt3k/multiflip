@@ -26,8 +26,12 @@ const wait = n => new Promise(resolve => setTimeout(resolve, n))
  */
 export default class Multiflip {
 
+  /**
+   * Initializes the multiflip.
+   */
   __init__ () {
     const elem = this.$el
+
     this.content = $('*', elem)
     this.w = elem.width()
     this.h = elem.height()
@@ -44,35 +48,24 @@ export default class Multiflip {
 
     this.bgcolor = elem.attr('bgcolor') || DEFAULT_BGCOLOR
 
-    this.init(elem)
-  }
-
-  /**
-   * Initializes the multiflip.
-   * @param {jQuery} elem The jquery dom
-   * @private
-   */
-  init (elem) {
     this.content.css({
       opacity: 0, // sets the content invisible at first
       transitionDuration: this.contentShowDur + 'ms' // sets the content's transition duration
     })
 
-    this.chipGroups = []
+    this.chips = []
 
     for (let i = 0; i < this.m; i++) {
       for (let j = 0; j < this.n; j++) {
-        let chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh)
-                    .prependTo(elem).addClass(CHIP_CLASS)
+        const chip = this.createChip(i * this.uw, j * this.uh, this.uw, this.uh, this.diffDur * (i + j))
+          .prependTo(elem)
+          .addClass(CHIP_CLASS)
 
-        let group = i + j
-
-        this.chipGroups[group] = this.chipGroups[group] || []
-        this.chipGroups[group].push(chip)
+        this.chips.push(chip)
       }
     }
 
-    return this
+    this.lastChip = this.chips.slice(-1)
   }
 
   /**
@@ -83,7 +76,7 @@ export default class Multiflip {
    * @param {Number} w The width
    * @param {Number} h The height
    */
-  createChip (left, top, w, h) {
+  createChip (left, top, w, h, delay) {
     return $('<div />').css({
       position: 'absolute',
       left: left + 'px',
@@ -92,6 +85,7 @@ export default class Multiflip {
       height: h + 'px',
       backgroundColor: this.bgcolor,
       transitionDuration: this.unitDur + 'ms',
+      transitionDelay: delay + 'ms',
       transform: FLIP_TRANSFORM,
       backfaceVisibility: 'hidden',
       transformStyle: 'preserve-3d'
@@ -103,16 +97,9 @@ export default class Multiflip {
    * @return {Promise}
    */
   show () {
-    return this.chipGroups
-        .map((group, i) => wait(this.diffDur * i).then(() => {
-          group.forEach(chip => chip.css('transform', ''))
+    this.chips.forEach(chip => chip.css('transform', ''))
 
-          return wait(this.unitDur * 3 / 4)
-            // Ignore the last 25% of the flipping for the moment and
-            // starts showing the content.
-        }))
-        .pop()
-        .then(() => this.showContents())
+    return wait(this.unitDur * 2 - this.contentShowDur).then(() => this.showContents())
   }
 
   /**
@@ -132,22 +119,11 @@ export default class Multiflip {
    */
   hide () {
     return this.hideContents()
-        .then(() => this.chipGroups.map((group, i) => this.hideChipGroupWithDelay(group, this.diffDur * i)).pop())
-  }
+      .then(() => {
+        this.chips.forEach(chip => chip.css('transform', FLIP_TRANSFORM))
 
-  /**
-   * Hides the group of the chip with the given delay
-   * @param {jQuery[]} group
-   * @param {number} delay
-   */
-  hideChipGroupWithDelay (group, delay) {
-    return wait(delay).then(() => {
-      group.forEach(chip => chip.css('transform', FLIP_TRANSFORM))
-
-      return wait(this.unitDur / 2)
-            // waits only the half of the unit dur
-            // because when the chip is half flipped, then it's already invisible.
-    })
+        return wait(this.unitDur * 2)
+      })
   }
 
   /**
