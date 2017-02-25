@@ -87,7 +87,7 @@ export default class Multiflip {
       .multiflip.${FLIPPED_CLASS} .${CHIP_CLASS} {
         transform: none;
       }
-      .multiflip :not(.${CHIP_CLASS}) {
+      .multiflip > :not(.${CHIP_CLASS}) {
         opacity: 0;
         transition-property: opacity;
       }
