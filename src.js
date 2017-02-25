@@ -1,5 +1,3 @@
-const $ = jQuery
-
 const DEFAULT_UNIT_DIR = 400
 const CONTENT_SHOW_DURATION_RATIO = 0.5
 
@@ -30,10 +28,8 @@ export default class Multiflip {
    * Initializes the multiflip.
    */
   __init__ () {
-    const elem = $(this.el)
-
-    this.w = elem.width()
-    this.h = elem.height()
+    this.w = this.el.clientWidth
+    this.h = this.el.clientHeight
 
     this.m = +this.el.getAttribute('m') || DEFAULT_M
     this.n = +this.el.getAttribute('n') || DEFAULT_N
