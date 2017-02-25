@@ -12,6 +12,27 @@ const FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)' // Transformation for the f
 
 const wait = n => new Promise(resolve => setTimeout(resolve, n))
 
+class MultiflipContent {
+
+  __init__ () {
+    const el = this.el
+    const delay = +el.getAttribute('delay')
+    const transition = +el.getAttribute('transition')
+
+    el.style.transitionDuration = `${transition}ms`
+    el.style.transitionDelay = `${delay}ms`
+
+    el.addEventListener('transitionend', () => {
+      if (this.el.parentElement.classList.contains(FLIPPED_CLASS)) {
+        el.style.transitionDelay = '0ms'
+      } else {
+        el.style.transitionDelay = `${delay}ms`
+      }
+    })
+  }
+
+}
+
 /**
  * Multiflip class handles the behaviours of multi-flipping.
  *
@@ -28,54 +49,54 @@ export default class Multiflip {
    * Initializes the multiflip.
    */
   __init__ () {
-    this.w = this.el.clientWidth
-    this.h = this.el.clientHeight
+    const el = this.el
+    const { initComponent } = this.capsid
 
-    this.m = +this.el.getAttribute('m') || DEFAULT_M
-    this.n = +this.el.getAttribute('n') || DEFAULT_N
-    this.uw = this.w / this.m
-    this.uh = this.h / this.n
+    const width = el.clientWidth
+    const height = el.clientHeight
 
-    this.unitDur = +this.el.getAttribute('unit-dur') || DEFAULT_UNIT_DIR
-    this.diffDur = this.unitDur / (this.m + this.n)
+    const m = +el.getAttribute('m') || DEFAULT_M
+    const n = +el.getAttribute('n') || DEFAULT_N
+    const unitW = width / m
+    const unitH = height / n
 
-    this.bgcolor = this.el.getAttribute('bgcolor') || DEFAULT_BGCOLOR
+    const unitDur = +el.getAttribute('unit-dur') || DEFAULT_UNIT_DIR
+    const diffDur = unitDur / (m + n)
+
+    const bgcolor = el.getAttribute('bgcolor') || DEFAULT_BGCOLOR
+
+    this.flipDur = unitDur * 2
 
     Multiflip.insertGlobalStyle()
 
-    Array.prototype.forEach.call(this.el.children, child => {
-      const transition = `${this.unitDur * CONTENT_SHOW_DURATION_RATIO}ms`
-      const delay = `${this.unitDur * (2 - CONTENT_SHOW_DURATION_RATIO)}ms`
+    Array.prototype.forEach.call(el.children, child => {
+      const transition = unitDur * CONTENT_SHOW_DURATION_RATIO
+      const delay = unitDur * (2 - CONTENT_SHOW_DURATION_RATIO)
 
-      child.style.transitionDuration = transition
-      child.style.transitionDelay = delay
-      child.addEventListener('transitionend', () => {
-        if (this.el.classList.contains(FLIPPED_CLASS)) {
-          child.style.transitionDelay = '0ms'
-        } else {
-          child.style.transitionDelay = delay
-        }
-      })
+      child.setAttribute('transition', transition)
+      child.setAttribute('delay', delay)
+
+      initComponent(MultiflipContent, child)
     })
 
-    Array(this.n * this.m).fill().forEach((_, c) => {
-      const i = c % this.m
-      const j = Math.floor(c / this.m)
+    Array(n * m).fill().forEach((_, c) => {
+      const i = c % m
+      const j = Math.floor(c / m)
 
       const div = document.createElement('div')
       const style = div.style
 
       div.classList.add(CHIP_CLASS)
 
-      style.left = i * this.uw + 'px'
-      style.top = j * this.uh + 'px'
-      style.width = this.uw + 'px'
-      style.height = this.uh + 'px'
-      style.backgroundColor = this.bgcolor
-      style.transitionDuration = this.unitDur + 'ms'
-      style.transitionDelay = this.diffDur * (i + j) + 'ms'
+      style.left = i * unitW + 'px'
+      style.top = j * unitH + 'px'
+      style.width = unitW + 'px'
+      style.height = unitH + 'px'
+      style.backgroundColor = bgcolor
+      style.transitionDuration = unitDur + 'ms'
+      style.transitionDelay = diffDur * (i + j) + 'ms'
 
-      this.el.insertBefore(div, this.el.firstChild)
+      el.insertBefore(div, el.firstChild)
     })
   }
 
@@ -116,7 +137,7 @@ export default class Multiflip {
   show () {
     this.el.classList.add(FLIPPED_CLASS)
 
-    return wait(this.unitDur * 2)
+    return wait(this.flipDur)
   }
 
   /**
@@ -126,6 +147,6 @@ export default class Multiflip {
   hide () {
     this.el.classList.remove(FLIPPED_CLASS)
 
-    return wait(this.unitDur * 2)
+    return wait(this.flipDur)
   }
 }
