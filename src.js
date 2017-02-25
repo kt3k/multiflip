@@ -1,6 +1,7 @@
 const $ = jQuery
 
 const DEFAULT_UNIT_DIR = 400
+const CONTENT_SHOW_DURATION_RATIO = 0.5
 
 const DEFAULT_M = 4
 const DEFAULT_N = 4
@@ -47,25 +48,38 @@ export default class Multiflip {
     Multiflip.insertGlobalStyle()
 
     Array.prototype.forEach.call(this.el.children, child => {
-      child.style.transitionDuration = `${this.unitDur}ms`
-      child.style.transitionDelay = `${this.unitDur / 2}ms`
+      const transition = `${this.unitDur * CONTENT_SHOW_DURATION_RATIO}ms`
+      const delay = `${this.unitDur * (2 - CONTENT_SHOW_DURATION_RATIO)}ms`
+
+      child.style.transitionDuration = transition
+      child.style.transitionDelay = delay
+      child.addEventListener('transitionend', () => {
+        if (this.el.classList.contains(FLIPPED_CLASS)) {
+          child.style.transitionDelay = '0ms'
+        } else {
+          child.style.transitionDelay = delay
+        }
+      })
     })
 
-    Array(this.n * this.m).fill().map((_, c) => {
+    Array(this.n * this.m).fill().forEach((_, c) => {
       const i = c % this.m
       const j = Math.floor(c / this.m)
-      const chip = Multiflip.createChip(
-        i * this.uw,
-        j * this.uh,
-        this.uw,
-        this.uh,
-        this.diffDur * (i + j),
-        this.bgcolor,
-        this.unitDur
-      )
 
-      this.el.insertBefore(chip, this.el.firstChild)
-      chip.classList.add(CHIP_CLASS)
+      const div = document.createElement('div')
+      const style = div.style
+
+      div.classList.add(CHIP_CLASS)
+
+      style.left = i * this.uw + 'px'
+      style.top = j * this.uh + 'px'
+      style.width = this.uw + 'px'
+      style.height = this.uh + 'px'
+      style.backgroundColor = this.bgcolor
+      style.transitionDuration = this.unitDur + 'ms'
+      style.transitionDelay = this.diffDur * (i + j) + 'ms'
+
+      this.el.insertBefore(div, this.el.firstChild)
     })
   }
 
@@ -97,29 +111,6 @@ export default class Multiflip {
     `
 
     document.body.appendChild(style)
-  }
-
-  /**
-   * Creates the pane's chip
-   * @private
-   * @param {Number} left The left offset
-   * @param {Number} top The top offset
-   * @param {Number} w The width
-   * @param {Number} h The height
-   */
-  static createChip (left, top, w, h, delay, bgcolor, unitDur) {
-    const div = document.createElement('div')
-    const style = div.style
-
-    style.left = left + 'px'
-    style.top = top + 'px'
-    style.width = w + 'px'
-    style.height = h + 'px'
-    style.backgroundColor = bgcolor
-    style.transitionDuration = unitDur + 'ms'
-    style.transitionDelay = delay + 'ms'
-
-    return div
   }
 
   /**

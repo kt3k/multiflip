@@ -7,7 +7,9 @@ capsid.def('multiflip', multiflip)
 setTimeout(function () {
   var demo = function (mf) {
     mf.show().then(function () {
-      mf.hide().then(function () { demo(mf) })
+      setTimeout(function () {
+        mf.hide().then(function () { demo(mf) })
+      }, 300)
     })
   }
 
@@ -37,6 +39,9 @@ setTimeout(function () {
     font-size: 3em;
     opacity: 0;
 }
+  body {
+    background-color: #999;
+  }
 </style>
 
 <div class="multiflip" m="8" n="4" unit-dur="400" bgcolor="#115588"><div class="content">Example</div></div>
