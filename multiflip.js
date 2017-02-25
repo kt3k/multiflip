@@ -4,9 +4,8 @@
   (global.multiflip = factory());
 }(this, (function () { 'use strict';
 
-var $ = jQuery;
-
 var DEFAULT_UNIT_DIR = 400;
+var CONTENT_SHOW_DURATION_RATIO = 0.5;
 
 var DEFAULT_M = 4;
 var DEFAULT_N = 4;
@@ -34,10 +33,8 @@ var Multiflip = function Multiflip () {};
 Multiflip.prototype.__init__ = function __init__ () {
     var this$1 = this;
 
-  var elem = $(this.el);
-
-  this.w = elem.width();
-  this.h = elem.height();
+  this.w = this.el.clientWidth;
+  this.h = this.el.clientHeight;
 
   this.m = +this.el.getAttribute('m') || DEFAULT_M;
   this.n = +this.el.getAttribute('n') || DEFAULT_N;
@@ -52,25 +49,38 @@ Multiflip.prototype.__init__ = function __init__ () {
   Multiflip.insertGlobalStyle();
 
   Array.prototype.forEach.call(this.el.children, function (child) {
-    child.style.transitionDuration = (this$1.unitDur) + "ms";
-    child.style.transitionDelay = (this$1.unitDur / 2) + "ms";
+    var transition = (this$1.unitDur * CONTENT_SHOW_DURATION_RATIO) + "ms";
+    var delay = (this$1.unitDur * (2 - CONTENT_SHOW_DURATION_RATIO)) + "ms";
+
+    child.style.transitionDuration = transition;
+    child.style.transitionDelay = delay;
+    child.addEventListener('transitionend', function () {
+      if (this$1.el.classList.contains(FLIPPED_CLASS)) {
+        child.style.transitionDelay = '0ms';
+      } else {
+        child.style.transitionDelay = delay;
+      }
+    });
   });
 
-  Array(this.n * this.m).fill().map(function (_, c) {
+  Array(this.n * this.m).fill().forEach(function (_, c) {
     var i = c % this$1.m;
     var j = Math.floor(c / this$1.m);
-    var chip = Multiflip.createChip(
-      i * this$1.uw,
-      j * this$1.uh,
-      this$1.uw,
-      this$1.uh,
-      this$1.diffDur * (i + j),
-      this$1.bgcolor,
-      this$1.unitDur
-    );
 
-    this$1.el.insertBefore(chip, this$1.el.firstChild);
-    chip.classList.add(CHIP_CLASS);
+    var div = document.createElement('div');
+    var style = div.style;
+
+    div.classList.add(CHIP_CLASS);
+
+    style.left = i * this$1.uw + 'px';
+    style.top = j * this$1.uh + 'px';
+    style.width = this$1.uw + 'px';
+    style.height = this$1.uh + 'px';
+    style.backgroundColor = this$1.bgcolor;
+    style.transitionDuration = this$1.unitDur + 'ms';
+    style.transitionDelay = this$1.diffDur * (i + j) + 'ms';
+
+    this$1.el.insertBefore(div, this$1.el.firstChild);
   });
 };
 
@@ -85,29 +95,6 @@ Multiflip.insertGlobalStyle = function insertGlobalStyle () {
   style.textContent = "\n      .multiflip ." + CHIP_CLASS + " {\n        position: absolute;\n        transform: " + FLIP_TRANSFORM + ";\n        backface-visibility: hidden;\n        transform-style: preserve-3d;\n      }\n      .multiflip." + FLIPPED_CLASS + " ." + CHIP_CLASS + " {\n        transform: none;\n      }\n      .multiflip > :not(." + CHIP_CLASS + ") {\n        opacity: 0;\n        transition-property: opacity;\n      }\n      .multiflip." + FLIPPED_CLASS + " > :not(." + CHIP_CLASS + ") {\n        opacity: 1;\n      }\n    ";
 
   document.body.appendChild(style);
-};
-
-/**
- * Creates the pane's chip
- * @private
- * @param {Number} left The left offset
- * @param {Number} top The top offset
- * @param {Number} w The width
- * @param {Number} h The height
- */
-Multiflip.createChip = function createChip (left, top, w, h, delay, bgcolor, unitDur) {
-  var div = document.createElement('div');
-  var style = div.style;
-
-  style.left = left + 'px';
-  style.top = top + 'px';
-  style.width = w + 'px';
-  style.height = h + 'px';
-  style.backgroundColor = bgcolor;
-  style.transitionDuration = unitDur + 'ms';
-  style.transitionDelay = delay + 'ms';
-
-  return div
 };
 
 /**
