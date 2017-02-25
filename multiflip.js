@@ -18,6 +18,27 @@ var FLIP_TRANSFORM = 'rotate3d(1, -1, 0, -180deg)'; // Transformation for the fl
 
 var wait = function (n) { return new Promise(function (resolve) { return setTimeout(resolve, n); }); };
 
+var MultiflipContent = function MultiflipContent () {};
+
+MultiflipContent.prototype.__init__ = function __init__ () {
+    var this$1 = this;
+
+  var el = this.el;
+  var delay = +el.getAttribute('delay');
+  var transition = +el.getAttribute('transition');
+
+  el.style.transitionDuration = transition + "ms";
+  el.style.transitionDelay = delay + "ms";
+
+  el.addEventListener('transitionend', function () {
+    if (this$1.el.parentElement.classList.contains(FLIPPED_CLASS)) {
+      el.style.transitionDelay = '0ms';
+    } else {
+      el.style.transitionDelay = delay + "ms";
+    }
+  });
+};
+
 /**
  * Multiflip class handles the behaviours of multi-flipping.
  *
@@ -31,56 +52,55 @@ var wait = function (n) { return new Promise(function (resolve) { return setTime
 var Multiflip = function Multiflip () {};
 
 Multiflip.prototype.__init__ = function __init__ () {
-    var this$1 = this;
+  var el = this.el;
+  var ref = this.capsid;
+    var initComponent = ref.initComponent;
 
-  this.w = this.el.clientWidth;
-  this.h = this.el.clientHeight;
+  var width = el.clientWidth;
+  var height = el.clientHeight;
 
-  this.m = +this.el.getAttribute('m') || DEFAULT_M;
-  this.n = +this.el.getAttribute('n') || DEFAULT_N;
-  this.uw = this.w / this.m;
-  this.uh = this.h / this.n;
+  var m = +el.getAttribute('m') || DEFAULT_M;
+  var n = +el.getAttribute('n') || DEFAULT_N;
+  var unitW = width / m;
+  var unitH = height / n;
 
-  this.unitDur = +this.el.getAttribute('unit-dur') || DEFAULT_UNIT_DIR;
-  this.diffDur = this.unitDur / (this.m + this.n);
+  var unitDur = +el.getAttribute('unit-dur') || DEFAULT_UNIT_DIR;
+  var diffDur = unitDur / (m + n);
 
-  this.bgcolor = this.el.getAttribute('bgcolor') || DEFAULT_BGCOLOR;
+  var bgcolor = el.getAttribute('bgcolor') || DEFAULT_BGCOLOR;
+
+  this.flipDur = unitDur * 2;
 
   Multiflip.insertGlobalStyle();
 
-  Array.prototype.forEach.call(this.el.children, function (child) {
-    var transition = (this$1.unitDur * CONTENT_SHOW_DURATION_RATIO) + "ms";
-    var delay = (this$1.unitDur * (2 - CONTENT_SHOW_DURATION_RATIO)) + "ms";
+  Array.prototype.forEach.call(el.children, function (child) {
+    var transition = unitDur * CONTENT_SHOW_DURATION_RATIO;
+    var delay = unitDur * (2 - CONTENT_SHOW_DURATION_RATIO);
 
-    child.style.transitionDuration = transition;
-    child.style.transitionDelay = delay;
-    child.addEventListener('transitionend', function () {
-      if (this$1.el.classList.contains(FLIPPED_CLASS)) {
-        child.style.transitionDelay = '0ms';
-      } else {
-        child.style.transitionDelay = delay;
-      }
-    });
+    child.setAttribute('transition', transition);
+    child.setAttribute('delay', delay);
+
+    initComponent(MultiflipContent, child);
   });
 
-  Array(this.n * this.m).fill().forEach(function (_, c) {
-    var i = c % this$1.m;
-    var j = Math.floor(c / this$1.m);
+  Array(n * m).fill().forEach(function (_, c) {
+    var i = c % m;
+    var j = Math.floor(c / m);
 
     var div = document.createElement('div');
     var style = div.style;
 
     div.classList.add(CHIP_CLASS);
 
-    style.left = i * this$1.uw + 'px';
-    style.top = j * this$1.uh + 'px';
-    style.width = this$1.uw + 'px';
-    style.height = this$1.uh + 'px';
-    style.backgroundColor = this$1.bgcolor;
-    style.transitionDuration = this$1.unitDur + 'ms';
-    style.transitionDelay = this$1.diffDur * (i + j) + 'ms';
+    style.left = i * unitW + 'px';
+    style.top = j * unitH + 'px';
+    style.width = unitW + 'px';
+    style.height = unitH + 'px';
+    style.backgroundColor = bgcolor;
+    style.transitionDuration = unitDur + 'ms';
+    style.transitionDelay = diffDur * (i + j) + 'ms';
 
-    this$1.el.insertBefore(div, this$1.el.firstChild);
+    el.insertBefore(div, el.firstChild);
   });
 };
 
@@ -104,7 +124,7 @@ Multiflip.insertGlobalStyle = function insertGlobalStyle () {
 Multiflip.prototype.show = function show () {
   this.el.classList.add(FLIPPED_CLASS);
 
-  return wait(this.unitDur * 2)
+  return wait(this.flipDur)
 };
 
 /**
@@ -114,7 +134,7 @@ Multiflip.prototype.show = function show () {
 Multiflip.prototype.hide = function hide () {
   this.el.classList.remove(FLIPPED_CLASS);
 
-  return wait(this.unitDur * 2)
+  return wait(this.flipDur)
 };
 
 return Multiflip;
