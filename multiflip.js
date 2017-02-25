@@ -82,7 +82,7 @@ Multiflip.insertGlobalStyle = function insertGlobalStyle () {
   var style = document.createElement('style');
   style.setAttribute('id', 'multiflip-global-style');
 
-  style.textContent = "\n      .multiflip ." + CHIP_CLASS + " {\n        position: absolute;\n        transform: " + FLIP_TRANSFORM + ";\n        backface-visibility: hidden;\n        transform-style: preserve-3d;\n      }\n      .multiflip." + FLIPPED_CLASS + " ." + CHIP_CLASS + " {\n        transform: none;\n      }\n      .multiflip :not(." + CHIP_CLASS + ") {\n        opacity: 0;\n        transition-property: opacity;\n      }\n      .multiflip." + FLIPPED_CLASS + " > :not(." + CHIP_CLASS + ") {\n        opacity: 1;\n      }\n    ";
+  style.textContent = "\n      .multiflip ." + CHIP_CLASS + " {\n        position: absolute;\n        transform: " + FLIP_TRANSFORM + ";\n        backface-visibility: hidden;\n        transform-style: preserve-3d;\n      }\n      .multiflip." + FLIPPED_CLASS + " ." + CHIP_CLASS + " {\n        transform: none;\n      }\n      .multiflip > :not(." + CHIP_CLASS + ") {\n        opacity: 0;\n        transition-property: opacity;\n      }\n      .multiflip." + FLIPPED_CLASS + " > :not(." + CHIP_CLASS + ") {\n        opacity: 1;\n      }\n    ";
 
   document.body.appendChild(style);
 };
