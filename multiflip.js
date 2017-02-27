@@ -20,23 +20,29 @@ var wait = function (n) { return new Promise(function (resolve) { return setTime
 
 var MultiflipContent = function MultiflipContent () {};
 
-MultiflipContent.prototype.__init__ = function __init__ () {
-    var this$1 = this;
+MultiflipContent.__init__ = function __init__ (ref) {
+    var on = ref.on;
 
+  on('transitionend')(this.prototype, 'onTransitionEnd');
+  console.log('Hey');
+};
+
+MultiflipContent.prototype.__init__ = function __init__ () {
   var el = this.el;
-  var delay = +el.getAttribute('delay');
   var transition = +el.getAttribute('transition');
 
-  el.style.transitionDuration = transition + "ms";
-  el.style.transitionDelay = delay + "ms";
+  this.delay = +el.getAttribute('delay');
 
-  el.addEventListener('transitionend', function () {
-    if (this$1.el.parentElement.classList.contains(FLIPPED_CLASS)) {
-      el.style.transitionDelay = '0ms';
-    } else {
-      el.style.transitionDelay = delay + "ms";
-    }
-  });
+  el.style.transitionDuration = transition + "ms";
+  el.style.transitionDelay = (this.delay) + "ms";
+};
+
+MultiflipContent.prototype.onTransitionEnd = function onTransitionEnd () {
+  if (this.el.parentElement.classList.contains(FLIPPED_CLASS)) {
+    this.el.style.transitionDelay = '0ms';
+  } else {
+    this.el.style.transitionDelay = (this.delay) + "ms";
+  }
 };
 
 /**
