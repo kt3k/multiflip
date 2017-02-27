@@ -14,21 +14,27 @@ const wait = n => new Promise(resolve => setTimeout(resolve, n))
 
 class MultiflipContent {
 
+  static __init__ ({ on }) {
+    on('transitionend')(this.prototype, 'onTransitionEnd')
+    console.log('Hey')
+  }
+
   __init__ () {
     const el = this.el
-    const delay = +el.getAttribute('delay')
     const transition = +el.getAttribute('transition')
 
-    el.style.transitionDuration = `${transition}ms`
-    el.style.transitionDelay = `${delay}ms`
+    this.delay = +el.getAttribute('delay')
 
-    el.addEventListener('transitionend', () => {
-      if (this.el.parentElement.classList.contains(FLIPPED_CLASS)) {
-        el.style.transitionDelay = '0ms'
-      } else {
-        el.style.transitionDelay = `${delay}ms`
-      }
-    })
+    el.style.transitionDuration = `${transition}ms`
+    el.style.transitionDelay = `${this.delay}ms`
+  }
+
+  onTransitionEnd () {
+    if (this.el.parentElement.classList.contains(FLIPPED_CLASS)) {
+      this.el.style.transitionDelay = '0ms'
+    } else {
+      this.el.style.transitionDelay = `${this.delay}ms`
+    }
   }
 
 }
