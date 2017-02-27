@@ -20,10 +20,8 @@ var wait = function (n) { return new Promise(function (resolve) { return setTime
 
 var MultiflipContent = function MultiflipContent () {};
 
-MultiflipContent.__init__ = function __init__ (ref) {
-    var on = ref.on;
-
-  on('transitionend')(this.prototype, 'onTransitionEnd');
+MultiflipContent.__init__ = function __init__ () {
+  this.capsid.on('transitionend')(this.prototype, 'onTransitionEnd');
 };
 
 MultiflipContent.prototype.__init__ = function __init__ () {
@@ -58,7 +56,7 @@ var Multiflip = function Multiflip () {};
 
 Multiflip.prototype.__init__ = function __init__ () {
   var el = this.el;
-  var ref = this.capsid;
+  var ref = Multiflip.capsid;
     var initComponent = ref.initComponent;
 
   var width = el.clientWidth;
