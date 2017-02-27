@@ -16,7 +16,6 @@ class MultiflipContent {
 
   static __init__ ({ on }) {
     on('transitionend')(this.prototype, 'onTransitionEnd')
-    console.log('Hey')
   }
 
   __init__ () {
