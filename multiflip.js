@@ -24,7 +24,6 @@ MultiflipContent.__init__ = function __init__ (ref) {
     var on = ref.on;
 
   on('transitionend')(this.prototype, 'onTransitionEnd');
-  console.log('Hey');
 };
 
 MultiflipContent.prototype.__init__ = function __init__ () {
