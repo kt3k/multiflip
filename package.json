@@ -30,11 +30,11 @@
   },
   "homepage": "https://github.com/kt3k/multiflip#readme",
   "peerDependencies": {
-    "capsid": ">=0.6.0"
+    "capsid": ">=0.7.0"
   },
   "devDependencies": {
     "bili": "^0.14.0",
-    "capsid": "^0.6.0",
+    "capsid": "^0.7.0",
     "standard": "^8.6.0"
   },
   "standard": {
