@@ -84,7 +84,9 @@ export default class Multiflip {
       initComponent(MultiflipContent, child)
     })
 
-    Array(n * m).fill().forEach((_, c) => {
+    const total = n * m
+
+    for (let c = 0; c < total; c++) {
       const i = c % m
       const j = Math.floor(c / m)
 
@@ -102,7 +104,7 @@ export default class Multiflip {
       style.transitionDelay = diffDur * (i + j) + 'ms'
 
       el.insertBefore(div, el.firstChild)
-    })
+    }
   }
 
   static insertGlobalStyle () {
