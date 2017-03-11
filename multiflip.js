@@ -86,7 +86,9 @@ Multiflip.prototype.__init__ = function __init__ () {
     initComponent(MultiflipContent, child);
   });
 
-  Array(n * m).fill().forEach(function (_, c) {
+  var total = n * m;
+
+  for (var c = 0; c < total; c++) {
     var i = c % m;
     var j = Math.floor(c / m);
 
@@ -104,7 +106,7 @@ Multiflip.prototype.__init__ = function __init__ () {
     style.transitionDelay = diffDur * (i + j) + 'ms';
 
     el.insertBefore(div, el.firstChild);
-  });
+  }
 };
 
 Multiflip.insertGlobalStyle = function insertGlobalStyle () {
