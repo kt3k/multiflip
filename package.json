@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "bili": "^0.14.0",
-    "capsid": "^0.7.0",
+    "capsid": "^0.27.0",
     "standard": "^8.6.0"
   },
   "standard": {

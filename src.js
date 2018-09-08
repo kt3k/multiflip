@@ -14,11 +14,11 @@ const wait = n => new Promise(resolve => setTimeout(resolve, n))
 
 class MultiflipContent {
 
-  static __init__ () {
+  static __mount__ () {
     this.capsid.on('transitionend')(this.prototype, 'onTransitionEnd')
   }
 
-  __init__ () {
+  __mount__ () {
     const el = this.el
     const transition = +el.getAttribute('transition')
 
@@ -53,9 +53,9 @@ export default class Multiflip {
   /**
    * Initializes the multiflip.
    */
-  __init__ () {
+  __mount__ () {
     const el = this.el
-    const { initComponent } = Multiflip.capsid
+    const { mount } = Multiflip.capsid
 
     const width = el.clientWidth
     const height = el.clientHeight
@@ -81,7 +81,7 @@ export default class Multiflip {
       child.setAttribute('transition', transition)
       child.setAttribute('delay', delay)
 
-      initComponent(MultiflipContent, child)
+      mount(MultiflipContent, child)
     })
 
     const total = n * m

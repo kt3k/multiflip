@@ -225,9 +225,9 @@ camelcase@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.0.0.tgz#8b0f90d44be5e281b903b9887349b92595ef07f2"
 
-capsid@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/capsid/-/capsid-0.7.0.tgz#6ea5c5fc7165bf4e94918fbff83d73bc5c3f069a"
+capsid@^0.27.0:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/capsid/-/capsid-0.27.2.tgz#fcad8c17faaeead66483fdd6e1ecc2680006c208"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"

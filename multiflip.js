@@ -20,11 +20,11 @@ var wait = function (n) { return new Promise(function (resolve) { return setTime
 
 var MultiflipContent = function MultiflipContent () {};
 
-MultiflipContent.__init__ = function __init__ () {
+MultiflipContent.__mount__ = function __mount__ () {
   this.capsid.on('transitionend')(this.prototype, 'onTransitionEnd');
 };
 
-MultiflipContent.prototype.__init__ = function __init__ () {
+MultiflipContent.prototype.__mount__ = function __mount__ () {
   var el = this.el;
   var transition = +el.getAttribute('transition');
 
@@ -54,10 +54,10 @@ MultiflipContent.prototype.onTransitionEnd = function onTransitionEnd () {
  */
 var Multiflip = function Multiflip () {};
 
-Multiflip.prototype.__init__ = function __init__ () {
+Multiflip.prototype.__mount__ = function __mount__ () {
   var el = this.el;
   var ref = Multiflip.capsid;
-    var initComponent = ref.initComponent;
+    var mount = ref.mount;
 
   var width = el.clientWidth;
   var height = el.clientHeight;
@@ -83,7 +83,7 @@ Multiflip.prototype.__init__ = function __init__ () {
     child.setAttribute('transition', transition);
     child.setAttribute('delay', delay);
 
-    initComponent(MultiflipContent, child);
+    mount(MultiflipContent, child);
   });
 
   var total = n * m;
